@@ -1,5 +1,4 @@
 import { Header } from '@/app/header';
-import Image from 'next/image';
 import Link from 'next/link';
 import { stackServerApp } from '@/stack';
 
