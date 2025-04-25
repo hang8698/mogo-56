@@ -46,9 +46,9 @@ export async function Header() {
           </div>
           </span>
           {
-            userProfile?.raw_json.profile_image_url && 
+            userProfile?.raw_json?.profile_image_url && 
             <Image 
-              src={userProfile?.raw_json.profile_image_url}
+              src={userProfile?.raw_json?.profile_image_url}
               alt="用户头像"
               width={32}
               height={32}
