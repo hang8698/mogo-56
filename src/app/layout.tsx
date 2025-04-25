@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Neon Auth example app',
-  description: 'Neon Auth example app',
+  title: 'Neon Auth 示例应用',
+  description: 'Neon Auth 示例应用',
 };
 
 export default function RootLayout({
@@ -25,11 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <StackProvider app={stackServerApp}>
+        <StackProvider app={stackServerApp} lang="zh-CN">
           <StackTheme>{children}</StackTheme>
         </StackProvider>
       </body>

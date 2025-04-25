@@ -10,33 +10,46 @@ export async function Header() {
 
   return (
     <header className="w-full flex justify-between items-center px-6 py-4 z-10">
-      <div className="font-medium text-[15px] tracking-tight">
-        <Image
-          src="/neon.svg"
-          alt="Neon logo"
-          width={102}
-          height={28}
-          priority
-        />
+      <div className="font-medium text-[15px] tracking-tight flex items-center gap-2">
+        <Link href="/" className="hover:opacity-80 transition-opacity">
+          <Image
+            src="/neon.svg"
+            alt="Logo"
+            width={102}
+            height={28}
+            priority
+          />
+        </Link>
+        <Link href="/" className="text-gray-300 hover:text-white transition-colors ml-4">
+          返回首页
+        </Link>
       </div>
       {user ? (
         <div className="flex items-center gap-4">
           <span className='inline-flex h-8 items-end flex-col'>
           {userProfile?.name && <span className="text-[14px] text-gray-600 dark:text-gray-300">
-            {`Hello, ${userProfile?.name.split(' ')[0]}`}
+            {`你好，${userProfile?.name.split(' ')[0]}`}
           </span>}
-          <Link
-            href={app.signOut}
-            className="bg-gray-50 px-1 underline text-[11px]  hover:no-underline"
-          >
-            Sign Out
-          </Link>
+          <div className="flex flex-col items-end gap-1">
+            <Link
+              href="/handler/account-settings"
+              className="bg-gray-50 px-1 underline text-[11px] hover:no-underline"
+            >
+              账户设置
+            </Link>
+            <Link
+              href={app.signOut}
+              className="bg-gray-50 px-1 underline text-[11px] hover:no-underline"
+            >
+              退出登录
+            </Link>
+          </div>
           </span>
           {
             userProfile?.raw_json.profile_image_url && 
             <Image 
               src={userProfile?.raw_json.profile_image_url}
-              alt="User avatar"
+              alt="用户头像"
               width={32}
               height={32}
               className="rounded-full"
@@ -50,13 +63,13 @@ export async function Header() {
             href={app.signIn}
             className="inline-flex h-8 items-center justify-center rounded-md px-4 text-[13px] font-medium text-gray-700 transition-all hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
           >
-            Log In
+            登录
           </Link>
           <Link
             href={app.signUp}
             className="inline-flex h-8 items-center justify-center font-medium  text-center rounded-full outline-none   dark:text-black bg-primary-1 hover:bg-[#00e5bf] whitespace-nowrap px-6 text-[13px] transition-colors duration-200"
           >
-            Sign Up
+            注册
           </Link>
         </div>
       )}
