@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>五四班单点登录演示</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      color: #00a589;
+    }
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    #user-section {
+      display: none;
+      padding: 20px;
+      background-color: #f0fffc;
+      border-radius: 8px;
+      margin-top: 20px;
+      border: 1px solid #00a589;
+    }
+    #login-section {
+      padding: 20px;
+      background-color: #f0f0f0;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    button, .login-btn {
+      background-color: #00a589;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button:hover, .login-btn:hover {
+      background-color: #008571;
+    }
+    .user-info {
+      margin-top: 20px;
+    }
+    .user-info p {
+      margin: 5px 0;
+    }
+    .user-info strong {
+      display: inline-block;
+      width: 120px;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status-success {
+      background-color: #4caf50;
+    }
+    .status-error {
+      background-color: #f44336;
+    }
+    #error-message {
+      color: #f44336;
+      margin-top: 20px;
+      font-weight: bold;
+      display: none;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+    #api-endpoint {
+      font-family: monospace;
+      padding: 4px 8px;
+      background: #eee;
+      border-radius: 4px;
+    }
+    .config-section {
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>五四班单点登录集成演示</h1>
+    <p>这是一个演示页面，展示如何在其他网站上集成五四班单点登录系统</p>
+  </header>
+  
+  <div class="container">
+    <h2>登录状态</h2>
+    
+    <div class="config-section">
+      <p>当前使用的认证服务器: <span id="api-endpoint">正在检测...</span></p>
+    </div>
+    
+    <div id="loading">
+      <p>检查登录状态中...</p>
+    </div>
+    
+    <div id="login-section">
+      <p>您尚未登录到五四班系统。</p>
+      <a href="#" id="login-link" class="login-btn" target="_blank">前往登录</a>
+      <p class="note">登录后，请回到此页面并点击"刷新状态"按钮</p>
+      <button onclick="checkUserAuthentication()">刷新状态</button>
+    </div>
+    
+    <div id="user-section">
+      <h3>
+        <span class="status-indicator status-success"></span>
+        已登录
+      </h3>
+      <p>您已成功通过五四班系统的单点登录认证！</p>
+      
+      <div class="user-info">
+        <p><strong>用户名:</strong> <span id="user-name">-</span></p>
+        <p><strong>邮箱:</strong> <span id="user-email">-</span></p>
+        <p><strong>角色:</strong> <span id="user-role">-</span></p>
+        <p><strong>ID:</strong> <span id="user-id">-</span></p>
+      </div>
+      
+      <button id="logout-button">退出登录</button>
+    </div>
+    
+    <div id="error-message"></div>
+  </div>
+  
+  <div class="footer">
+    <p>© 2025 五四班登录系统演示 - 本页面仅用于演示目的</p>
+    <p>
+      <a href="/" id="home-link" style="color: #00a589;">返回主站</a> | 
+      <a href="/api/auth/docs" id="docs-link" style="color: #00a589;">查看API文档</a>
+    </p>
+  </div>
+
+  <script>
+    // 自动检测API服务器地址
+    const POSSIBLE_AUTH_SERVERS = [
+      'http://localhost:3000',
+      'https://auth.20204.xyz',
+      'https://auth.20204.dpdns.org',
+      window.location.origin // 当前页面的来源
+    ];
+    
+    // 自动获取API地址
+    let authServer = '';
+    let authBaseUrl = '';
+    
+    // 检测当前站点
+    function detectAuthServer() {
+      // 优先使用当前域名
+      if (window.location.hostname === 'localhost' || 
+          window.location.hostname === '127.0.0.1') {
+        authServer = 'http://localhost:3000';
+      } else if (window.location.hostname === 'auth.20204.xyz') {
+        authServer = 'https://auth.20204.xyz';
+      } else if (window.location.hostname === 'auth.20204.dpdns.org') {
+        authServer = 'https://auth.20204.dpdns.org';
+      } else {
+        // 如果不是已知域名，使用当前域名
+        authServer = window.location.origin;
+      }
+      
+      // 更新UI和链接
+      updateUIWithServer(authServer);
+      return authServer;
+    }
+    
+    // 更新UI上的服务器信息和链接
+    function updateUIWithServer(server) {
+      document.getElementById('api-endpoint').textContent = server + '/api/auth/validate';
+      document.getElementById('login-link').href = server + '/handler/sign-in';
+      document.getElementById('home-link').href = server + '/';
+      document.getElementById('docs-link').href = server + '/api/auth/docs';
+      
+      // 更新退出登录按钮
+      document.getElementById('logout-button').onclick = function() {
+        window.location.href = server + '/handler/sign-out?redirect=' + encodeURIComponent(window.location.href);
+      };
+    }
+    
+    // 验证用户登录状态
+    function checkUserAuthentication() {
+      // 确保已检测到认证服务器
+      if (!authServer) {
+        authServer = detectAuthServer();
+      }
+      
+      // 显示加载状态
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('user-section').style.display = 'none';
+      document.getElementById('error-message').style.display = 'none';
+      
+      fetch(authServer + '/api/auth/validate', {
+        method: 'POST',
+        credentials: 'include', // 这很重要，确保发送跨域cookie
+      })
+      .then(response => {
+        // 检查HTTP状态码
+        if (!response.ok) {
+          throw new Error(`HTTP错误: ${response.status} ${response.statusText}`);
+        }
+        
+        // 检查内容类型
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new TypeError(`预期JSON响应，但收到: ${contentType}`);
+        }
+        
+        return response.json();
+      })
+      .then(data => {
+        // 隐藏加载状态
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.success) {
+          // 用户已登录
+          console.log('已登录用户:', data.user);
+          // 显示用户信息
+          document.getElementById('user-name').textContent = data.user.displayName || '未设置';
+          document.getElementById('user-email').textContent = data.user.email || '未设置';
+          document.getElementById('user-role').textContent = data.user.role || '普通用户';
+          document.getElementById('user-id').textContent = data.user.id || '-';
+          document.getElementById('login-section').style.display = 'none';
+          document.getElementById('user-section').style.display = 'block';
+        } else {
+          // 用户未登录，显示登录链接
+          document.getElementById('login-section').style.display = 'block';
+          document.getElementById('user-section').style.display = 'none';
+          if (data.message) {
+            document.getElementById('error-message').textContent = '错误: ' + data.message;
+            document.getElementById('error-message').style.display = 'block';
+          }
+        }
+      })
+      .catch(error => {
+        // 隐藏加载状态
+        document.getElementById('loading').style.display = 'none';
+        console.error('验证失败:', error);
+        
+        // 显示详细错误信息
+        let errorMessage = '连接错误: 无法连接到认证服务器，请确保服务器正在运行。';
+        if (error instanceof TypeError && error.message.includes('JSON')) {
+          errorMessage = '响应格式错误: 服务器未返回有效的JSON数据。';
+        } else if (error instanceof Error) {
+          errorMessage = `${error.name}: ${error.message}`;
+        }
+        
+        // 显示错误或登录链接
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('user-section').style.display = 'none';
+        document.getElementById('error-message').textContent = errorMessage;
+        document.getElementById('error-message').style.display = 'block';
+      });
+    }
+
+    // 初始化检测认证服务器
+    detectAuthServer();
+    
+    // 页面加载时检查用户状态
+    document.addEventListener('DOMContentLoaded', checkUserAuthentication);
+  </script>
+</body>
+</html> 

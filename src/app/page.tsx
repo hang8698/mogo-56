@@ -19,12 +19,14 @@ export default async function Home() {
           </p>
           
           {user && (
-            <Link
-              href="/handler/account-settings"
-              className="mt-8 inline-flex h-12 items-center justify-center font-medium text-center rounded-md px-8 py-3 text-[16px] bg-primary-1 hover:bg-[#00e5bf] text-black transition-colors duration-200 shadow-md"
-            >
-              管理我的账户
-            </Link>
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/handler/account-settings"
+                className="inline-flex h-12 items-center justify-center font-medium text-center rounded-md px-8 py-3 text-[16px] bg-primary-1 hover:bg-[#00e5bf] text-black transition-colors duration-200 shadow-md"
+              >
+                管理我的账户
+              </Link>
+            </div>
           )}
           
           {!user && (
@@ -44,8 +46,33 @@ export default async function Home() {
             </div>
           )}
         </header>
+        
+        {/* 开发者资源区域 */}
+        <section className="w-full mt-8 bg-gray-800/50 p-6 rounded-lg">
+          <h2 className="text-xl font-semibold mb-4 text-white">开发者资源</h2>
+          <p className="text-gray-300 mb-4">
+            本系统提供单点登录(SSO)API，允许集成到其他网站系统中。用户在本站登录后，可以在其他集成网站上自动识别身份。
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
+            <Link
+              href="/api/auth/docs"
+              className="inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium bg-primary-1 hover:bg-[#00e5bf] text-black transition-colors duration-200"
+            >
+              查看API文档
+            </Link>
+            <Link
+              href="/demo.html"
+              className="inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-gray-700 border border-gray-600"
+              target="_blank"
+            >
+              查看演示页面
+            </Link>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+      
+      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center text-xs text-gray-500">
+        © 2025 五四班 版权所有
       </footer>
     </div>
   );

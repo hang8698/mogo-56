@@ -3,19 +3,278 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  --primary-color: #00e5bf;
+  --primary-rgb: 0, 229, 191;
+  --stack-bg-color: rgb(0, 0, 0);
+  --stack-text-color: rgb(255, 255, 255);
+  --stack-border-color: rgba(75, 75, 75, 0.5);
+  --stack-input-bg: rgba(30, 30, 30, 0.8);
+  --stack-input-text: rgb(255, 255, 255);
+  --stack-button-bg: var(--primary-color);
+  --stack-button-text: rgb(0, 0, 0);
+  --stack-link-color: var(--primary-color);
+  --stack-error-color: rgb(220, 38, 38);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.light-theme {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 240, 240, 240;
+  --background-end-rgb: 255, 255, 255;
+  --primary-color: #00a589;
+  --primary-rgb: 0, 165, 137;
+  --stack-bg-color: rgb(255, 255, 255);
+  --stack-text-color: rgb(0, 0, 0);
+  --stack-border-color: rgba(200, 200, 200, 0.5);
+  --stack-input-bg: rgba(240, 240, 240, 0.8);
+  --stack-input-text: rgb(0, 0, 0);
+  --stack-button-bg: var(--primary-color);
+  --stack-button-text: rgb(255, 255, 255);
+  --stack-link-color: var(--primary-color);
+  --stack-error-color: rgb(220, 38, 38);
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.light-theme .text-white {
+  color: #1e1e1e;
+}
+
+.light-theme .text-gray-300 {
+  color: #444444;
+}
+
+.light-theme .text-gray-400 {
+  color: #555555;
+}
+
+.light-theme .bg-gray-800\/50 {
+  background-color: rgba(232, 232, 232, 0.8);
+}
+
+.light-theme .border-gray-600 {
+  border-color: #cccccc;
+}
+
+.light-theme .hover\:bg-gray-700:hover {
+  background-color: #e0e0e0;
+}
+
+/* Stack Auth customization */
+[data-stack-component] {
+  background-color: var(--stack-bg-color) !important;
+  color: var(--stack-text-color) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-stack-component] input,
+[data-stack-component] select,
+[data-stack-component] textarea {
+  background-color: var(--stack-input-bg) !important;
+  color: var(--stack-input-text) !important;
+  border-color: var(--stack-border-color) !important;
+}
+
+[data-stack-component] button {
+  background-color: var(--stack-button-bg) !important;
+  color: var(--stack-button-text) !important;
+}
+
+[data-stack-component] a {
+  color: var(--stack-link-color) !important;
+}
+
+[data-stack-component] [data-stack-error] {
+  color: var(--stack-error-color) !important;
+}
+
+[data-stack-component] [data-stack-label] {
+  color: var(--stack-text-color) !important;
+}
+
+/* Additional styles for Stack Auth handler pages */
+[data-stack-component="SignIn"],
+[data-stack-component="SignUp"],
+[data-stack-component="ForgotPassword"],
+[data-stack-component="AccountSettings"] {
+  max-width: 450px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Make sure inputs adapt to theme properly */
+[data-stack-component] input[type="text"],
+[data-stack-component] input[type="password"],
+[data-stack-component] input[type="email"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border-width: 1px;
+  transition: all 0.2s ease;
+}
+
+[data-stack-component] input[type="text"]:focus,
+[data-stack-component] input[type="password"]:focus,
+[data-stack-component] input[type="email"]:focus {
+  outline: none;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.25);
+}
+
+/* Custom button styling */
+[data-stack-component] button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+[data-stack-component] button[type="submit"]:hover {
+  filter: brightness(1.1);
+}
+
+/* Title and header styling */
+[data-stack-component] h1,
+[data-stack-component] h2 {
+  color: var(--stack-text-color) !important;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Light mode specific adjustments for container background */
+.light-theme [data-stack-component="SignIn"],
+.light-theme [data-stack-component="SignUp"],
+.light-theme [data-stack-component="ForgotPassword"],
+.light-theme [data-stack-component="AccountSettings"] {
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode specific adjustments for container background */
+[data-theme-mode="dark"] [data-stack-component="SignIn"],
+[data-theme-mode="dark"] [data-stack-component="SignUp"],
+[data-theme-mode="dark"] [data-stack-component="ForgotPassword"],
+[data-theme-mode="dark"] [data-stack-component="AccountSettings"] {
+  background-color: #0f0f0f;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced Stack Auth customization for text color adaptation */
+[data-stack-component] * {
+  color: var(--stack-text-color) !important;
+}
+
+/* Override specific elements that need different colors */
+[data-stack-component] button:not([data-stack-secondary]) {
+  color: var(--stack-button-text) !important;
+}
+
+[data-stack-component] a {
+  color: var(--stack-link-color) !important;
+}
+
+[data-stack-component] [data-stack-error] {
+  color: var(--stack-error-color) !important;
+}
+
+/* Focus on inputs should maintain proper colors */
+[data-stack-component] input:focus,
+[data-stack-component] select:focus,
+[data-stack-component] textarea:focus {
+  border-color: var(--primary-color) !important;
+}
+
+/* Make sure placeholders have proper contrast */
+[data-stack-component] input::placeholder {
+  color: rgba(var(--foreground-rgb), 0.5) !important;
+}
+
+/* Ensure all headings use proper text color */
+[data-stack-component] h1,
+[data-stack-component] h2,
+[data-stack-component] h3,
+[data-stack-component] h4,
+[data-stack-component] h5,
+[data-stack-component] h6,
+[data-stack-component] label,
+[data-stack-component] p,
+[data-stack-component] span {
+  color: var(--stack-text-color) !important;
+}
+
+/* Enhance secondary buttons for proper contrast */
+[data-stack-component] button[data-stack-secondary] {
+  background-color: transparent !important;
+  border: 1px solid var(--stack-border-color) !important;
+  color: var(--stack-text-color) !important;
+}
+
+[data-stack-component] button[data-stack-secondary]:hover {
+  background-color: rgba(var(--foreground-rgb), 0.05) !important;
+}
+
+/* 针对特定主题类的样式规则 */
+.stack-light-theme [data-stack-component] {
+  --stack-bg-color: rgb(255, 255, 255) !important;
+  --stack-text-color: rgb(0, 0, 0) !important;
+  --stack-input-bg: rgba(240, 240, 240, 0.8) !important;
+  --stack-input-text: rgb(0, 0, 0) !important;
+  color: rgb(0, 0, 0) !important;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.stack-dark-theme [data-stack-component] {
+  --stack-bg-color: rgb(0, 0, 0) !important;
+  --stack-text-color: rgb(255, 255, 255) !important;
+  --stack-input-bg: rgba(30, 30, 30, 0.8) !important;
+  --stack-input-text: rgb(255, 255, 255) !important;
+  color: rgb(255, 255, 255) !important;
+  background-color: rgb(0, 0, 0) !important;
+}
+
+/* 确保主题类直接应用的元素上也有正确的颜色 */
+.stack-light-theme {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+}
+
+.stack-dark-theme {
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
+}
+
+/* 确保即使在嵌套深处的元素也能正确继承主题颜色 */
+.stack-light-theme [data-stack-component] * {
+  color: var(--stack-text-color) !important;
+}
+
+.stack-dark-theme [data-stack-component] * {
+  color: var(--stack-text-color) !important;
+}
+
+/* 为Stack Auth组件中的输入框添加正确的颜色 */
+.stack-light-theme [data-stack-component] input {
+  color: rgb(0, 0, 0) !important;
+  background-color: rgba(240, 240, 240, 0.8) !important;
+}
+
+.stack-dark-theme [data-stack-component] input {
+  color: rgb(255, 255, 255) !important;
+  background-color: rgba(30, 30, 30, 0.8) !important;
 }

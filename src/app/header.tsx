@@ -2,77 +2,29 @@ import { getUserDetails } from '@/app/actions';
 import { stackServerApp } from '@/stack';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ClientHeader } from '@/components/ClientHeader';
 
 export async function Header() {
   const user = await stackServerApp.getUser();
-  const app = stackServerApp.urls;
-  const userProfile = await getUserDetails(user?.id);
+  const userProfile = user ? await getUserDetails(user.id) : null;
+  
+  // 只传递客户端需要的数据，避免传递函数
+  const userData = user ? {
+    id: user.id,
+    displayName: user.displayName,
+    primaryEmail: user.primaryEmail
+  } : null;
+  
+  // 只传递简单的URL字符串，而非完整的对象
+  const authUrls = {
+    signIn: '/handler/sign-in',
+    signUp: '/handler/sign-up',
+    signOut: '/handler/sign-out'
+  };
 
-  return (
-    <header className="w-full flex justify-between items-center px-6 py-4 z-10">
-      <div className="font-medium text-[15px] tracking-tight flex items-center gap-2">
-        <Link href="/" className="hover:opacity-80 transition-opacity">
-          <Image
-            src="/neon.svg"
-            alt="Logo"
-            width={102}
-            height={28}
-            priority
-          />
-        </Link>
-        <Link href="/" className="text-gray-300 hover:text-white transition-colors ml-4">
-          返回首页
-        </Link>
-      </div>
-      {user ? (
-        <div className="flex items-center gap-4">
-          <span className='inline-flex h-8 items-end flex-col'>
-          {userProfile?.name && <span className="text-[14px] text-gray-600 dark:text-gray-300">
-            {`你好，${userProfile?.name.split(' ')[0]}`}
-          </span>}
-          <div className="flex flex-col items-end gap-1">
-            <Link
-              href="/handler/account-settings"
-              className="bg-gray-50 px-1 underline text-[11px] hover:no-underline"
-            >
-              账户设置
-            </Link>
-            <Link
-              href={app.signOut}
-              className="bg-gray-50 px-1 underline text-[11px] hover:no-underline"
-            >
-              退出登录
-            </Link>
-          </div>
-          </span>
-          {
-            userProfile?.raw_json?.profile_image_url && 
-            <Image 
-              src={userProfile?.raw_json?.profile_image_url}
-              alt="用户头像"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
-          }
-            
-        </div>
-      ) : (
-        <div className="flex items-center gap-3">
-          <Link
-            href={app.signIn}
-            className="inline-flex h-8 items-center justify-center rounded-md px-4 text-[13px] font-medium text-gray-700 transition-all hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
-          >
-            登录
-          </Link>
-          <Link
-            href={app.signUp}
-            className="inline-flex h-8 items-center justify-center font-medium  text-center rounded-full outline-none   dark:text-black bg-primary-1 hover:bg-[#00e5bf] whitespace-nowrap px-6 text-[13px] transition-colors duration-200"
-          >
-            注册
-          </Link>
-        </div>
-      )}
-    </header>
-  );
+  return <ClientHeader 
+    userData={userData} 
+    authUrls={authUrls} 
+    userProfile={userProfile}
+  />;
 }
