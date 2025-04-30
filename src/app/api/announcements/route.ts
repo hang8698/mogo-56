@@ -12,7 +12,7 @@ async function ensureDataDirectory() {
   const dirPath = path.join(process.cwd(), 'data');
   try {
     await fs.access(dirPath);
-  } catch (error) {
+  } catch {
     await fs.mkdir(dirPath, { recursive: true });
   }
 }
@@ -24,7 +24,7 @@ async function readAnnouncements() {
   try {
     const data = await fs.readFile(DATA_FILE_PATH, 'utf-8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch {
     // 如果文件不存在，返回初始数据
     const initialData = [
       {
@@ -167,8 +167,8 @@ export async function PUT(req: NextRequest) {
     await saveAnnouncements(announcements);
     
     return NextResponse.json(announcements[index]);
-  } catch (error) {
-    console.error('更新公告失败:', error);
+  } catch {
+    console.error('更新公告失败');
     return NextResponse.json(
       { error: '更新公告失败' },
       { status: 500 }

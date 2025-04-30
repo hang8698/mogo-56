@@ -8,7 +8,7 @@ import { authConfig } from '@/utils/config';
 // 允许的域名列表
 const VALID_ORIGINS = authConfig.allowedOrigins.filter(origin => !!origin);
 
-export async function OPTIONS(req: NextRequest) {
+export async function OPTIONS() {
   const headersList = headers();
   const origin = headersList.get('origin');
   
