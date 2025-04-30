@@ -1,7 +1,5 @@
 import { getUserDetails } from '@/app/actions';
 import { stackServerApp } from '@/stack';
-import Link from 'next/link';
-import Image from 'next/image';
 import { ClientHeader } from '@/components/ClientHeader';
 
 export async function Header() {

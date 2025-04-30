@@ -103,4 +103,61 @@ export async function POST(req: NextRequest) {
       }
     );
   }
+}
+
+export async function GET() {
+  // 设置CORS响应头
+  const headersList = headers();
+  const origin = headersList.get('origin');
+  const responseHeaders: HeadersInit = {};
+  
+  if (origin && VALID_ORIGINS.includes(origin)) {
+    responseHeaders['Access-Control-Allow-Origin'] = origin;
+    responseHeaders['Access-Control-Allow-Credentials'] = 'true';
+  }
+
+  try {
+    // 使用Stack Auth验证用户
+    const user = await stackServerApp.getUser();
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "未认证" },
+        { 
+          status: 401,
+          headers: responseHeaders
+        }
+      );
+    }
+
+    // 获取用户详细信息
+    const userProfile = await getUserDetails(user.id);
+    const userRole = isAdmin(user) ? 'admin' : 'user';
+
+    // 返回用户信息（注意：只返回必要的非敏感信息）
+    return NextResponse.json({
+      success: true,
+      user: {
+        id: user.id,
+        displayName: user.displayName,
+        email: user.primaryEmail,
+        emailVerified: user.primaryEmailVerified,
+        role: userRole,
+        profile: userProfile ? {
+          name: userProfile.name,
+          // 可以添加其他你想从userProfile中公开的字段
+        } : null
+      }
+    }, { 
+      headers: responseHeaders
+    });
+  } catch (error) {
+    console.error("身份验证错误:", error);
+    return NextResponse.json(
+      { success: false, message: "验证失败" },
+      { 
+        status: 500,
+        headers: responseHeaders
+      }
+    );
+  }
 } 

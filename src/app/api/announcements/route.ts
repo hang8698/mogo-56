@@ -115,10 +115,9 @@ export async function POST(req: NextRequest) {
     await saveAnnouncements(announcements);
     
     return NextResponse.json(newAnnouncement, { status: 201 });
-  } catch (error) {
-    console.error('创建公告失败:', error);
+  } catch {
     return NextResponse.json(
-      { error: '创建公告失败' },
+      { message: "Error creating announcement" },
       { status: 500 }
     );
   }
@@ -213,10 +212,9 @@ export async function DELETE(req: NextRequest) {
     await saveAnnouncements(newAnnouncements);
     
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('删除公告失败:', error);
+  } catch {
     return NextResponse.json(
-      { error: '删除公告失败' },
+      { message: "Error deleting announcement" },
       { status: 500 }
     );
   }

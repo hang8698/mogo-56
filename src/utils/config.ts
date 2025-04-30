@@ -5,7 +5,6 @@
 
 // 确定当前环境
 const isDevelopment = process.env.NODE_ENV === 'development';
-const isProduction = process.env.NODE_ENV === 'production';
 
 // 确定应用基础URL
 let appUrl = process.env.NEXT_PUBLIC_APP_URL;

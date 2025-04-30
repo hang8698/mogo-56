@@ -16,7 +16,12 @@ interface ClientHeaderProps {
     signUp: string;
     signOut: string;
   };
-  userProfile: any;
+  userProfile: {
+    name?: string;
+    raw_json?: {
+      profile_image_url?: string;
+    };
+  } | null;
 }
 
 export function ClientHeader({ userData, authUrls, userProfile }: ClientHeaderProps) {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 // This component ensures theme is properly initialized on direct navigation to auth pages
 export function ThemeInitializer() {

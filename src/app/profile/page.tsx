@@ -1,16 +1,15 @@
 'use client';
 
 import { Header } from '@/app/header';
-import { useUser, useStackApp } from '@stackframe/stack';
+import { useUser } from '@stackframe/stack';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { getUserRoleName } from '@/utils/admin';
+import { useState } from 'react';
+import Image from 'next/image';
 
 export default function ProfilePage() {
   // 重定向未登录用户
   const user = useUser({ or: "redirect" });
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState({ text: '', type: '' });
+  const [message] = useState({ text: '', type: '' });
   
   // 格式化日期
   const formatDate = (dateString) => {
@@ -44,10 +43,12 @@ export default function ProfilePage() {
           <div className="flex flex-col mb-6">
             <div className="flex items-center justify-center mb-6">
               {user.profileImageUrl ? (
-                <img 
+                <Image 
                   src={user.profileImageUrl} 
                   alt="用户头像" 
-                  className="w-24 h-24 rounded-full object-cover border-2 border-primary-1"
+                  width={96}
+                  height={96}
+                  className="rounded-full object-cover border-2 border-primary-1"
                 />
               ) : (
                 <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center text-2xl font-bold text-gray-300">
